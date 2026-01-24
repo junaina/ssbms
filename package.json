@@ -12,6 +12,7 @@
     "build:api": "npm run build -w apps/api",
     "lint:web": "npm run lint -w apps/web",
     "lint:api": "npm run lint -w apps/api",
+    "start:api": "npm run start -w apps/api",
     "dev": "npm run dev:api",
     "lint": "npm run lint:web && npm run lint:api",
     "build": "npm run build:web && npm run build:api",
