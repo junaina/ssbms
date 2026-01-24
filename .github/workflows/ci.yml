@@ -17,6 +17,8 @@ jobs:
         with:
           node-version: 20
           cache: npm
+      - name: Upgrade npm (fix optional deps)
+        run: npm i -g npm@11.3.0
 
       - name: install
         run: npm ci
