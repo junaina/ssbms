@@ -1,24 +1,20 @@
 import { useState } from "react";
-import { register } from "../features/auth/authApi";
+import { useDispatch, useSelector } from "react-redux";
+import { registerThunk } from "../features/auth/authSlice";
 
-export default function Register({ onRegistered, goLogin }) {
+export default function Register({ goLogin }) {
+  const dispatch = useDispatch();
+  const { error, status } = useSelector((s) => s.auth);
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("CUSTOMER");
-  const [err, setErr] = useState("");
 
-  async function onSubmit(e) {
+  function onSubmit(e) {
     e.preventDefault();
-    setErr("");
-
-    try {
-      const data = await register({ name, email, password, role });
-      onRegistered(data.user);
-    } catch (e2) {
-      setErr(e2.message);
-    }
+    dispatch(registerThunk({ firstName, lastName, email, password, role }));
   }
 
   return (
@@ -30,6 +26,7 @@ export default function Register({ onRegistered, goLogin }) {
           <label>First Name</label>
           <input value={firstName} onChange={(e) => setFirstName(e.target.value)} />
         </div>
+
         <div>
           <label>Last Name</label>
           <input value={lastName} onChange={(e) => setLastName(e.target.value)} />
@@ -46,20 +43,16 @@ export default function Register({ onRegistered, goLogin }) {
         </div>
 
         <div style={{ marginTop: 12 }}>
-          <label>I'm a </label>
+          <label>Role</label>
           <select value={role} onChange={(e) => setRole(e.target.value)}>
             <option value="CUSTOMER">CUSTOMER</option>
             <option value="PROVIDER">PROVIDER</option>
-
-            {/* cant set admin at fe */}
-            {/* <option 
-            value="ADMIN">ADMIN</option> */}
           </select>
         </div>
 
-        {err && <p style={{ marginTop: 12 }}>{err}</p>}
+        {error && <p style={{ marginTop: 12 }}>{error}</p>}
 
-        <button style={{ marginTop: 16 }} type="submit">
+        <button style={{ marginTop: 16 }} type="submit" disabled={status === "loading"}>
           Register
         </button>
       </form>

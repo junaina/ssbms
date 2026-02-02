@@ -13,12 +13,13 @@ export function clearToken() {
 }
 
 export async function apiFetch(path, { method = "GET", body, auth = false } = {}) {
+  const p = path.startsWith("/") ? path : `/${path}`;
   const headers = { "content-type": "application/json" };
   if (auth) {
     const token = getToken();
     if (token) headers.authorization = `Bearer ${token}`;
   }
-  const res = await fetch(`${API_URL}${path}`, {
+  const res = await fetch(`${API_URL}${p}`, {
     method,
     headers,
     body: body ? JSON.stringify(body) : undefined,

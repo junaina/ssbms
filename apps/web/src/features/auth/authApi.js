@@ -1,31 +1,43 @@
-import { apiFetch, clearToken, setToken } from "../../lib/http.js";
+const API_URL = import.meta.env.VITE_API_URL;
 
-export async function register({ firstName, lastName, email, password, role }) {
-  const res = await apiFetch("/auth/register", {
-    method: "POST",
-    body: { firstName, lastName, email, password, role },
+function getToken() {
+  return localStorage.getItem("ssbms_token");
+}
+
+export function setToken(token) {
+  localStorage.setItem("ssbms_token", token);
+}
+
+export function clearToken() {
+  localStorage.removeItem("ssbms_token");
+}
+
+export async function apiFetch(path, { method = "GET", body, auth = false } = {}) {
+  const p = path.startsWith("/") ? path : `/${path}`;
+  const headers = { "content-type": "application/json" };
+
+  if (auth) {
+    const token = getToken();
+    if (token) headers.authorization = `Bearer ${token}`;
+  }
+
+  const res = await fetch(`${API_URL}${p}`, {
+    method,
+    headers,
+    body: body ? JSON.stringify(body) : undefined,
   });
-  //backend returns tokwn
-  const token = res?.data?.token;
-  if (token) setToken(token);
-  return res.data;
+
+  const data = await res.json().catch(() => null);
+
+  if (!res.ok) {
+    const message = data?.error?.message || `Request failed (${res.status})`;
+    throw new Error(message);
+  }
+
+  return data;
 }
 
-export async function login({ email, password }) {
-  const res = await apiFetch("/auth/login", {
-    method: "POST",
-    body: { email, password },
-  });
-  const token = res?.data?.token;
-  if (token) setToken(token);
-  return res.data;
-}
-
-export async function me() {
-  const res = await apiFetch("/auth/me", { auth: true });
-  return res.data;
-}
-
-export async function logout() {
+export function logout() {
+  // header-based JWT logout = client deletes token
   clearToken();
 }

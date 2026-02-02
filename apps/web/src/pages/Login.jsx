@@ -1,23 +1,18 @@
 import { useState } from "react";
-import { login } from "../features/auth/authApi";
+import { useDispatch, useSelector } from "react-redux";
+import { loginThunk } from "../features/auth/authSlice";
 
-export default function Login({ onLoggedIn, goRegister }) {
+export default function Login({ goRegister }) {
+  const dispatch = useDispatch();
+  const { error, status } = useSelector((s) => s.auth);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [err, setErr] = useState("");
 
   async function onSubmit(e) {
     e.preventDefault();
-    setErr("");
-
-    try {
-      const data = await login({ email, password });
-      onLoggedIn(data.user);
-    } catch (e2) {
-      setErr(e2.message);
-    }
+    dispatch(loginThunk({ email, password }));
   }
-
   return (
     <div style={{ maxWidth: 420, margin: "40px auto" }}>
       <h2>Login</h2>
@@ -33,9 +28,9 @@ export default function Login({ onLoggedIn, goRegister }) {
           <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
         </div>
 
-        {err && <p style={{ marginTop: 12 }}>{err}</p>}
+        {error && <p style={{ marginTop: 12 }}>{error}</p>}
 
-        <button style={{ marginTop: 16 }} type="submit">
+        <button style={{ marginTop: 16 }} type="submit" disabled={status === "loading"}>
           Login
         </button>
       </form>

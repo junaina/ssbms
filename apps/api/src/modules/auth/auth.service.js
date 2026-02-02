@@ -10,23 +10,24 @@ function signToken(user) {
     expiresIn: env.JWT_EXPIRES_IN,
   });
 }
-
+function sanitizePublicRole(role) {
+  if (role === ROLES.PROVIDER) return ROLES.PROVIDER;
+  return ROLES.CUSTOMER; // default
+}
 export const authService = {
   async register({ firstName, lastName, email, password, role }) {
     const existing = await userRepo.findByEmail(email);
     if (existing) throw new ApiError(409, "email is already in use");
 
-    const safeRole = role ?? ROLES.CUSTOMER;
-
+    const safeRole = sanitizePublicRole(role);
     //provider is unapproved from the get go
-    const isApproved = safeRole === ROLES.PROVIDER ? false : true;
     const user = await userRepo.create({
       firstName,
       lastName,
       email,
       password,
       role: safeRole,
-      isApproved,
+      isApproved: safeRole === ROLES.PROVIDER ? false : true,
     });
     const token = signToken(user);
     return { user, token };
