@@ -10,6 +10,10 @@ export const userRepo = {
   create(data) {
     return User.create(data);
   },
+  findManyByIds(ids) {
+    return User.find({ _id: { $in: ids } });
+  },
+
   // Admin: list customers/providers only (never admins)
   listForAdmin(role) {
     const filter = { role: { $in: [ROLES.CUSTOMER, ROLES.PROVIDER] } };

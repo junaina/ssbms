@@ -4,6 +4,10 @@ import { env } from "./config/env.js";
 import { connectDB } from "./config/db.js";
 import { authRoutes } from "./modules/auth/auth.routes.js";
 import { adminRoutes } from "./modules/admin/admin.routes.js";
+import { providerRoutes } from "./modules/provider/provider.routes.js";
+import { servicePublicRoutes } from "./modules/services/service.public.routes.js";
+import { bookingCustomerRoutes } from "./modules/bookings/booking.customer.routes.js";
+
 import { errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
@@ -21,6 +25,9 @@ app.get("/health", (req, res) => res.json({ ok: true, service: "ssbms-api" }));
 //auth module- all routes inside authRoutes live under /auth
 app.use("/auth", authRoutes);
 app.use("/admin", adminRoutes);
+app.use("/provider", providerRoutes);
+app.use("/services", servicePublicRoutes);
+app.use("/bookings", bookingCustomerRoutes);
 
 app.use(errorHandler);
 await connectDB();
