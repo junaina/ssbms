@@ -44,15 +44,31 @@ function serviceTitle(s) {
   if (typeof s === "string") return s;
   return s.title || s._id || "—";
 }
-export default function BookingsTable({ bookings, busy, onUnbook, onFulfill, search, setSearch }) {
+export default function BookingsTable({
+  bookings,
+  busy,
+  onUnbook,
+  onFulfill,
+  search,
+  setSearch,
+  statusFilter,
+  setStatusFilter,
+}) {
+  const normStatus = (v) => String(v ?? "").toUpperCase();
+
   const filtered = (bookings ?? []).filter((b) => {
+    // Status filter first
+    if (statusFilter && statusFilter !== "ALL") {
+      if (normStatus(b.status) !== normStatus(statusFilter)) return false;
+    }
+
+    // Search filter
     if (!search) return true;
     const q = search.toLowerCase();
     const customer = displayName(b.customerId).toLowerCase();
     const service = serviceTitle(b.serviceId).toLowerCase();
-    return (
-      customer.includes(q) || service.includes(q) || (b.status ?? "").toLowerCase().includes(q)
-    );
+    const st = normStatus(b.status).toLowerCase();
+    return customer.includes(q) || service.includes(q) || st.includes(q);
   });
 
   return (
@@ -66,6 +82,19 @@ export default function BookingsTable({ bookings, busy, onUnbook, onFulfill, sea
             placeholder="customer, service, status..."
             className="mt-2 w-full rounded-xl border border-zinc-800 bg-zinc-950/60 px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500 outline-none focus:ring-2 focus:ring-zinc-700"
           />
+        </div>
+
+        <div className="w-full sm:max-w-[220px]">
+          <label className="block text-sm font-medium text-zinc-200">Status</label>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="mt-2 w-full rounded-xl border border-zinc-800 bg-zinc-950/60 px-3 py-2 text-sm text-zinc-100 outline-none focus:ring-2 focus:ring-zinc-700"
+          >
+            <option value="ALL">All</option>
+            <option value="PENDING">Pending</option>
+            <option value="FULFILLED">Completed</option>
+          </select>
         </div>
 
         <div className="text-sm text-zinc-400">

@@ -32,6 +32,7 @@ export default function ProviderDashboard({ me, onLoggedOut }) {
 
   const [searchServices, setSearchServices] = useState("");
   const [searchBookings, setSearchBookings] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
 
   const approved = !!me?.isApproved;
 
@@ -201,6 +202,8 @@ export default function ProviderDashboard({ me, onLoggedOut }) {
             onFulfill={fulfill}
             search={searchBookings}
             setSearch={setSearchBookings}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
           />
         )}
       </div>
