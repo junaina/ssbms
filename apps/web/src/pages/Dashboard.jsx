@@ -1,5 +1,6 @@
 import AdminDashboard from "./AdminDashboard";
-
+import ProviderDashboard from "./ProviderDashboard";
+import CustomerDashboard from "./CustomerDashboard";
 function Placeholder({ title, subtitle }) {
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
@@ -17,26 +18,12 @@ function Placeholder({ title, subtitle }) {
   );
 }
 
-export default function Dashboard({ user }) {
+export default function Dashboard({ user, onLoggedOut }) {
   if (user?.role === "ADMIN") return <AdminDashboard me={user} />;
 
   if (user?.role === "PROVIDER") {
-    return (
-      <Placeholder
-        title="Provider Dashboard"
-        subtitle={
-          user?.isApproved
-            ? "Provider features will be enabled once Service + Booking backend is complete."
-            : "Your provider account is pending approval. Contact admin."
-        }
-      />
-    );
+    return <ProviderDashboard me={user} onLoggedOut={onLoggedOut} />;
   }
 
-  return (
-    <Placeholder
-      title="Customer Dashboard"
-      subtitle="Customer features will be enabled once Services browsing + Bookings backend is complete."
-    />
-  );
+  return <CustomerDashboard me={user} onLoggedOut={onLoggedOut} />;
 }
