@@ -58,7 +58,7 @@ const authSlice = createSlice({
       state.user = null;
       state.token = null;
       state.status = "idle";
-      state.error == "";
+      state.error = "";
       clearToken();
     },
   },
