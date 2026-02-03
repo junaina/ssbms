@@ -1,35 +1,25 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { meThunk, logout as logoutAction } from "./features/auth/authSlice";
 
-function App() {
-  const [count, setCount] = useState(0)
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+export default function App() {
+  const dispatch = useDispatch();
+  const { user, token, status } = useSelector((s) => s.auth);
+  const [page, setPage] = useState("login");
+  useEffect(() => {
+    if (token) dispatch(meThunk());
+  }, [token, dispatch]);
+  if (status == "loading") return <div style={{ padding: 24 }}>Loading...</div>;
+  if (user) {
+    return <Dashboard user={user} onLoggedOut={() => dispatch(logoutAction())} />;
+  }
+  return page === "register" ? (
+    <Register goLogin={() => setPage("login")} />
+  ) : (
+    <Login goRegister={() => setPage("register")} />
+  );
 }
-
-export default App
