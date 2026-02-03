@@ -102,6 +102,10 @@ const authSlice = createSlice({
         state.user = null;
         state.token = null;
         state.error = action.payload || "";
+      })
+      .addCase(meThunk.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.user = action.payload.user;
       });
   },
 });
