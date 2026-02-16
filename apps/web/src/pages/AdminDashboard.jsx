@@ -70,7 +70,7 @@ export default function AdminDashboard({ me }) {
   return (
     <AdminShell
       title="Admin Dashboard"
-      subtitle="Manage providers and customers — approve providers, and remove accounts when needed."
+      subtitle="Manage providers and customers"
       right={headerRight}
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

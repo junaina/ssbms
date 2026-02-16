@@ -86,7 +86,6 @@ export default function UserTable({
                 <tr key={u._id} className="hover:bg-zinc-950/30">
                   <td className="px-4 py-3">
                     <div className="font-medium text-zinc-100">{fullName}</div>
-                    <div className="text-xs text-zinc-500">{u._id}</div>
                   </td>
 
                   <td className="px-4 py-3 text-zinc-200">{u.email}</td>
