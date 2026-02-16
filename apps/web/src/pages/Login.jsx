@@ -77,10 +77,6 @@ export default function Login({ goRegister }) {
             </button>
           </div>
         </div>
-
-        <p className="mt-6 text-xs text-zinc-500">
-          Tip: Use your email + password. Your session stays active after refresh.
-        </p>
       </div>
     </div>
   );
